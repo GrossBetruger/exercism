@@ -1,0 +1,6 @@
+[package]
+name = "nth_prime"
+version = "1.0.0"
+
+[dependencies]
+foreach = "0.3.0"
