@@ -4,48 +4,46 @@ extern crate foreach;
 use foreach::*;
 
 pub fn reply(message: &str) -> &str {
+    let message = message.trim_right();
     let suffix: String = message.chars().rev().take(1).into_iter().collect();
-    let mut all_caps = false;
+    let all_caps_message = all_caps(&message);
 
-    let chr_it = message.chars();
-    if chr_it.filter(|chr | chr.is_alphabetic()).collect::<String>().len() > 0 {
-
-        chr_it
-        .filter(move |chr | chr.is_alphabetic())
-        .foreach(|chr, _| {
-            if  chr.is_uppercase() {
-                all_caps = true;
-            }
-    });
-
-
-    }
-
-    if !vec!["?", "!", "."].contains(&suffix.as_str()) {
-        panic!("bad grammar, message must end with '?' or '!'");
-    }
-
-    println!("message {}", message);
+    println!("message '{}'", message);
     println!("suffix '{}'", suffix);
-    println!("ALLCAPS {}", all_caps);
+    println!("ALLCAPS {}", all_caps_message);
 
-    match all_caps {
+    match all_caps_message {
         false => {
               match suffix.as_str() {
-                "." => "Whatever.",
+//                "." => "Whatever.",
                 "!" => "Whoa, chill out!",
                 "?" => "Sure.",
                 "" => "Fine. Be that way!",
-                _ => panic!("bad grammar, message must end with '?' or '!' or '.'")
+                _ => "Whatever.",
             }
         },
         true => match suffix.as_str() {
-            "." => "Whatever.",
-            "!" => "Whoa, chill out!",
             "?" => "Calm down, I know what I'm doing!",
-            "" => "Fine. Be that way!",
-            _ => panic!("bad grammar, message must end with '?' or '!' or '.'")
-
+            _ => "Whoa, chill out!",
         }
     }
 }
+
+fn all_caps(message: &str) -> bool {
+    let mut all_caps = true;
+    let chr_it = message.chars();
+    let alpha = chr_it.filter(|chr| chr.is_alphabetic()).collect::<String>();
+    if alpha.len() == 0 {
+        return false;
+    }
+    alpha.chars()
+        .filter(move |chr | chr.is_alphabetic())
+        .foreach(|chr, _| {
+            if  chr.is_lowercase() {
+                all_caps = false;
+            }
+    });
+    all_caps
+    }
+
+
