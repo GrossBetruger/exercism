@@ -4,6 +4,6 @@ use nth_prime::*;
 
 fn main() {
 
-    let ord = 100;
+    let ord = 10000;
     println!("prime number: {}, {}", ord, nth(ord).unwrap());
 }
