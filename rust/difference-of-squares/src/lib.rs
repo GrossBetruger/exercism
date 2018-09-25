@@ -1,16 +1,15 @@
 pub fn square_of_sum(n: usize) -> usize {
-    (1_i64..n as i64 + 1).fold(0, |a, b| a + b).pow(2) as usize
+    (1..=n).fold(0, |a, b| a + b).pow(2)
 }
 
 pub fn sum_of_squares(n: usize) -> usize {
-    let sum_of_squares: i64 = (1..n as i64 + 1)
+    (1..=n as i64)
         .collect::<Vec<i64>>()
         .iter()
         .map(|a| a.pow(2))
-        .sum();
-    sum_of_squares as usize
+        .sum::<i64>() as usize
 }
 
 pub fn difference(n: usize) -> usize {
-    (square_of_sum(n) - sum_of_squares(n))
+    square_of_sum(n) - sum_of_squares(n)
 }
