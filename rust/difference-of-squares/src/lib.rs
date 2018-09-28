@@ -3,9 +3,7 @@ pub fn square_of_sum(n: usize) -> usize {
 }
 
 pub fn sum_of_squares(n: usize) -> usize {
-    (1..=n as i64)
-        .map(|a| a.pow(2))
-        .sum::<i64>() as usize
+    (1..=n).map(|a| a.pow(2)).sum::<usize>()
 }
 
 pub fn difference(n: usize) -> usize {
