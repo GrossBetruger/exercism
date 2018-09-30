@@ -1,13 +1,14 @@
 extern crate foreach;
 extern crate rayon;
 
-use rayon::prelude::*;
 use foreach::*;
+use rayon::prelude::*;
+
+const LIMIT: u64 = 1000_000;
 
 pub fn factors(mut n: u64) -> Vec<u64> {
     let mut factors = vec![];
-    for &prime in primes_to(n).iter() {
-
+    for &prime in primes_to(LIMIT).iter() {
         while n % prime == 0 {
             factors.push(prime);
             n /= prime;
@@ -18,11 +19,6 @@ pub fn factors(mut n: u64) -> Vec<u64> {
         }
     }
     factors
-}
-
-
-fn get_hardcoded_primes() -> Vec<u64>{
-    vec![2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113, 461, 9539, 894119]
 }
 
 fn is_prime(n: u64) -> bool {
@@ -38,14 +34,8 @@ fn is_prime(n: u64) -> bool {
 }
 
 pub fn primes_to(n: u64) -> Vec<u64> {
-    let mut primes = vec![];
-    for i in 2..=n {
-        if is_prime(i) {
-            primes.push(i);
-        }
-    }
-    primes
-}
-
-fn riter() {
+    (2..n + 1)
+        .into_par_iter()
+        .filter(|i| is_prime(*i))
+        .collect()
 }
