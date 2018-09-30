@@ -1,6 +1,7 @@
 extern crate prime_factors;
 
 use prime_factors::factors;
+use prime_factors::primes_to;
 
 #[test]
 fn test_no_factors() {
@@ -41,4 +42,10 @@ fn test_product_of_primes() {
 #[ignore]
 fn test_factors_include_large_prime() {
     assert_eq!(factors(93819012551), vec![11, 9539, 894119]);
+}
+
+#[test]
+#[ignore]
+fn test_primes_to() {
+    assert!(primes_to(93819012551_f64.sqrt() as u64 + 2).contains(&901255));
 }
