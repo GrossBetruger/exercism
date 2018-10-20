@@ -3,8 +3,8 @@ pub fn find_saddle_points(input: &[Vec<u64>]) -> Vec<(usize, usize)> {
     let mut results = vec![];
 
     // check if empty
-    match input.iter().map(|v| v.len()).collect::<Vec<usize>>().iter().max().unwrap() {
-        &0 => return results,
+    match input.iter().map(|v| v.len()).max().unwrap() {
+        0 => return results,
         _ => {}
     }
 
@@ -26,7 +26,7 @@ pub fn find_saddle_points(input: &[Vec<u64>]) -> Vec<(usize, usize)> {
             let column_min = column.iter().min().unwrap();
 
             if column_min == vec_max {
-            results.push((i, vec_max_idx));
+                results.push((i, vec_max_idx));
             }
         }
     }
