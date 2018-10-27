@@ -1,4 +1,8 @@
 #!/bin/bash
 
-echo $1|rev|cat
-
+str="$1"
+res=""
+for i in $(seq 1 ${#str});
+  do res+=${str:${#str}-$i:1};
+done
+echo $res
