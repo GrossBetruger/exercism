@@ -4,9 +4,9 @@ let agg=0
 
 exp=$(($1-1))
 
-if [ "$1" = "total" ]; then
+if [[ "$1" = "total" ]]; then
     for i in range {1..63};
-        do agg=$((var + $(./grains.sh $i)));
+        do agg=$(bc <<< "$agg+(2^$i)");
     done;
     echo $agg
     exit
