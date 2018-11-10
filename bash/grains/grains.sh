@@ -6,9 +6,9 @@ exp=$(($1-1))
 
 if [[ "$1" = "total" ]]; then
     for i in range {1..63};
-        do agg=$(bc <<< "$agg+(2^$i)");
+        do let agg+=$((1<<i));
     done;
-    echo $agg
+    printf "%llu\n" $agg
     exit
 fi
 
@@ -17,4 +17,4 @@ if (($exp > 63)) || (($exp < 0)); then
     exit 1
 fi
 
-echo $(bc <<< 2^$exp)
+printf "%llu\n" $((1<<$exp))
