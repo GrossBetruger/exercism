@@ -1,18 +1,20 @@
 #!/bin/bash
 
-if [ "$1" = "total" ]; then 
-    echo 18446744073709551615
-    exit
-fi
+let agg=0
 
 exp=$(($1-1))
+
+if [ "$1" = "total" ]; then
+    for i in range {1..63};
+        do agg=$((var + $(./grains.sh $i)));
+    done;
+    echo $agg
+    exit
+fi
 
 if (($exp > 63)) || (($exp < 0)); then
     echo "Error: invalid input"
     exit 1
 fi
-if (($exp == 63)); then 
-    echo 9223372036854775808
-    exit
-fi
-echo $((2**$exp)) 
+
+echo $(bc <<< 2^$exp)
