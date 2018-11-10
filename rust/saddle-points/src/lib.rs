@@ -8,13 +8,8 @@ pub fn find_saddle_points(input: &[Vec<u64>]) -> Vec<(usize, usize)> {
     }
 
     for (i, vec) in input.iter().enumerate() {
-        let mut max_indices = vec![];
         let vec_max = vec.iter().max().unwrap();
-        for (j, n) in vec.iter().enumerate() {
-            if n == vec_max {
-                max_indices.push(j)
-            }
-        }
+        let max_indices = vec.iter().enumerate().filter(|(_j, n)| *n == vec_max).map(|(j, _n)| j);
 
         for vec_max_idx in max_indices {
             let column_min = input
