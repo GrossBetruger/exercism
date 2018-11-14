@@ -1,0 +1,35 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 43a59a07840e2d8555f9d6ac5d27cea7972f73412acf637f3a83246abdfd62fe
+
+name:           nth-prime
+version:        2.1.0.5
+build-type:     Simple
+
+library
+  exposed-modules:
+      Prime
+  other-modules:
+      Paths_nth_prime
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Tests.hs
+  other-modules:
+      Paths_nth_prime
+  hs-source-dirs:
+      test
+  build-depends:
+      base
+    , hspec
+    , nth-prime
+  default-language: Haskell2010
