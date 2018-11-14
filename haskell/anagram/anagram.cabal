@@ -1,0 +1,36 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 3d8ca8c355427e4a4a9bf5fc68067b01420285acd88e2ce95422e46743fe45f3
+
+name:           anagram
+version:        1.4.0.7
+build-type:     Simple
+
+library
+  exposed-modules:
+      Anagram
+  other-modules:
+      Paths_anagram
+  hs-source-dirs:
+      src
+  build-depends:
+      base
+      , containers
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Tests.hs
+  other-modules:
+      Paths_anagram
+  hs-source-dirs:
+      test
+  build-depends:
+      anagram
+    , base
+    , hspec
+  default-language: Haskell2010
