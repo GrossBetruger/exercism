@@ -7,7 +7,7 @@ import Test.Hspec.Runner (configFastFail, defaultConfig, hspecWith)
 import Clock (addDelta, fromHourMin, toString)
 
 main :: IO ()
-main = hspecWith defaultConfig {configFastFail = False} specs
+main = hspecWith defaultConfig {configFastFail = True} specs
 
 specs :: Spec
 specs = do
