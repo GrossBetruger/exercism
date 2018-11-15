@@ -20,7 +20,7 @@ showTime timeUnit
 
 
 toString :: Clock -> String
-toString clock = showTime (abs (mod (getHour clock) 24)) ++ ":" ++ showTime (abs (mod (getMin clock) 60))
+toString clock = showTime (abs(getHour clock) `mod` 24) ++ ":" ++ showTime (abs(getMin clock) `mod` 60)
 
 addDelta :: Int -> Int -> Clock -> Clock
-addDelta hour min clock = error "You need to implement this function."
+addDelta hour min clock = Clock (getHour clock + hour) (getMin clock + min)
