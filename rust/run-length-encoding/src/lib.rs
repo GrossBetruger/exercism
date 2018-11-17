@@ -2,7 +2,7 @@ extern crate regex;
 
 use regex::Regex;
 
-const ENCODERS: &str = r"(\d+\D)|\D";
+const ENCODED_PATTERNS: &str = r"(\d+\D)|\D";
 
 const BASE_TEN_RADIX: u32 = 10;
 
@@ -67,7 +67,7 @@ pub fn decode(source: &str) -> String {
 }
 
 fn extract_patterns(encoded: &str) -> Vec<String> {
-    let re = Regex::new(ENCODERS).unwrap();
+    let re = Regex::new(ENCODED_PATTERNS).unwrap();
     let mut pattens: Vec<String> = Vec::new();
     for cap in re.captures_iter(encoded) {
         match cap.get(0) {
