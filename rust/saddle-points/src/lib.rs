@@ -2,9 +2,9 @@ pub fn find_saddle_points(input: &[Vec<u64>]) -> Vec<(usize, usize)> {
     let mut results = vec![];
 
     // check if empty
-    match input.iter().map(|v| v.len()).max().unwrap() {
-        0 => return results,
-        _ => {}
+    match input.iter().all(|v| v.is_empty()) {
+        true => return results,
+        false => {}
     }
 
     for (i, vec) in input.iter().enumerate() {
