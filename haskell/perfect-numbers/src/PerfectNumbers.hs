@@ -1,9 +1,6 @@
 module PerfectNumbers (classify, Classification(..)) where
 
 
-import Data.Maybe
-
-
 data Classification = Deficient | Perfect | Abundant deriving (Eq, Show)
 
 dividedBy n m = rem n m == 0
