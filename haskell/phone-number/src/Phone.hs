@@ -21,7 +21,7 @@ validSubscriberNumber number
 
 number :: String -> Maybe String
 number xs
- | length xs < 10 = Nothing
+ | (length (filterSymbols xs)) < 10 = Nothing
  | validSubscriberNumber xs == False = Nothing
  | length (filterSymbols xs) == 10  = Just $ filterSymbols $ filterInternationalCountryCode xs
  | validate11Digits xs == True = Just $ filterSymbols $ filterInternationalCountryCode xs
