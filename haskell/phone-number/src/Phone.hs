@@ -26,4 +26,4 @@ number xs
  | length (filterSymbols xs) == 10  = Just $ filterSymbols $ filterInternationalCountryCode xs
  | validate11Digits xs == True = Just $ filterSymbols $ filterInternationalCountryCode xs
  | otherwise = Nothing
- 
+
