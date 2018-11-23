@@ -43,11 +43,51 @@ pub fn convert(number: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>,
         number,
         from_base,
         to_base,
-        to_base10(number, from_base)
+        to_num(number, from_base)
 
     )
 }
 
-fn to_base10(num: &[u32], base: u32) -> u32 {
-    num.iter().enumerate().fold(0, |acc, (i, n)|acc + (base.pow(i as u32) * n))
+fn to_num(num: &[u32], base: u32) -> u32 {
+    num.iter()
+        .rev()
+        .enumerate()
+        .fold(0, |acc, (i, n)|acc + (base.pow(i as u32) * n))
 }
+
+fn from_num(num: u32, base: u32) -> Vec<u32> {
+    let digits = (num as f32).log(base as f32).ceil() as u32;
+    let mut result: Vec<u32> = Vec::with_capacity(digits as usize);
+    let mut acc = 0;
+
+    for _ in 0..=digits {
+        result.push(0
+        );
+    }
+    for e in (0..=digits).rev() {
+        // result.push(0);
+        for i in 0..=e+1 {
+            let digit = base.pow(e) * i;
+            println!("i: {}", i);
+            println!("e: {}", e);
+            println!("digit: {}", digit);
+            println!("acc: {}", acc);
+
+            match digit != 0 && acc + digit <= num {
+                true => {
+                    println!("acc + digit {}", acc + digit);
+                    println!("write to: {}", (digits - e) as usize);
+                    println!();
+
+                    result[(digits -e ) as usize] += 1;
+                    acc += digit;
+                }
+                false => {println!();}
+                }
+        }
+    }
+    println!("res: {:?}", result);
+    result
+
+}
+
