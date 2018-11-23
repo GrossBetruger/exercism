@@ -14,7 +14,8 @@ impl Clock {
     }
 
     pub fn add_minutes(&mut self, minutes: i32) -> Self {
-        Clock::new(self.hours + Clock::roll_over_hours(minutes), self.minutes + Clock::roll_over_minutes(minutes))
+        Clock::new(self.hours + Clock::roll_over_hours(minutes, self.minutes),
+                    Clock::roll_over_minutes(self.minutes + minutes))
     }
 
     pub fn to_string(self) -> String {
@@ -22,11 +23,11 @@ impl Clock {
                 Clock::stringify_time(self.minutes))
     }
 
+    fn roll_over_hours(minutes: i32, previous_minutes: i32) -> i32 {
+       match previous_minutes + minutes < 0  {
+           false => (previous_minutes + minutes) / 60,
 
-    fn roll_over_hours(minutes: i32) -> i32 {
-       match minutes < 0 {
-           false => minutes / 60,
-           true => minutes / 60 -1
+           true => (previous_minutes + minutes) / 60 -1
        }
     }
 
@@ -40,14 +41,13 @@ impl Clock {
     }
 
     fn initiate_hours(hours: i32, minutes: i32) -> i32 {
-        Clock::mathematical_modulo(hours + Clock::roll_over_hours(minutes), 24)
+        Clock::mathematical_modulo(hours + Clock::roll_over_hours(minutes, 0), 24)
 
     }
 
     fn roll_over_minutes(minutes: i32) -> i32 {
         Clock::mathematical_modulo(minutes, 60)
     }
-
 
     fn stringify_time(time_representation: i32) -> String {
         match time_representation.to_string().len() {
