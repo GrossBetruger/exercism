@@ -1,5 +1,5 @@
 
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 const VALUES: [(u32, Allergen);8] = [(1, Allergen::Eggs),
                                 (2, Allergen::Peanuts),
@@ -11,10 +11,11 @@ const VALUES: [(u32, Allergen);8] = [(1, Allergen::Eggs),
                                 (128, Allergen::Cats)];
 
 pub struct Allergies {
-    allergens: Vec<Allergen>
+    allergens: Vec<Allergen>,
+    allergens_set: HashSet<Allergen>
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone, Eq, Hash)]
 pub enum Allergen {
     Eggs,
     Peanuts,
@@ -26,38 +27,29 @@ pub enum Allergen {
     Cats,
 }
 
-enum AllergenValues {
-    Eggs = 1,
-    Peanuts = 2,
-    Shellfish = 4,
-    Strawberries = 8,
-    Tomatoes = 16,
-    Chocolate = 32,
-    Pollen = 64,
-    Cats = 128,
-}
-
 impl Allergies {
     pub fn new(score: u32) -> Self {
-        let mut allergies_map = HashMap::new();
+//        let mut allergies_map = HashMap::new();
+        let mut allergens = vec![];
+        let mut allergens_set = vec![];
         for (val, allergen) in VALUES.iter() {
-            allergies_map.insert(val, allergen);
+            if score & val == *val {
+                allergens.push(*allergen);
+                allergens_set.push(*allergen);
+            }
         }
 
         Allergies {
-            allergens: vec![]
+            allergens: allergens,
+            allergens_set: allergens_set.into_iter().collect()
         }
-
     }
 
     pub fn is_allergic_to(&self, allergen: &Allergen) -> bool {
-        unimplemented!(
-            "Determine if the patient is allergic to the '{:?}' allergen.",
-            allergen
-        );
+        self.allergens_set.contains(allergen)
     }
 
     pub fn allergies(&self) -> Vec<Allergen> {
-        unimplemented!("Return the list of allergens contained within the score with which the Allergies struct was made.");
+        self.allergens.clone()
     }
 }
