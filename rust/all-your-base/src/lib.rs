@@ -1,3 +1,5 @@
+
+
 #[derive(Debug, PartialEq)]
 pub enum Error {
     InvalidInputBase,
@@ -37,15 +39,21 @@ pub enum Error {
 ///     process input with leading 0 digits.
 ///
 pub fn convert(number: &[u32], from_base: u32, to_base: u32) -> Result<Vec<u32>, Error> {
+    if vec![1,0].contains(&from_base) {
+        return Err(Error::InvalidInputBase);
+    }
 
-    unimplemented!(
-        "Convert {:?} from base {} to base {} ten {}",
-        number,
-        from_base,
-        to_base,
-        to_num(number, from_base)
+    if vec![1,0].contains(&to_base) {
+        return Err(Error::InvalidOutputBase);
+    }
 
-    )
+    if number.iter().any(|n| n >= &from_base) {
+        return Err(Error::InvalidDigit(*number.iter().filter(|n| n >= &&from_base).nth(0).unwrap()));
+    }
+
+    let num = to_num(number, from_base);
+    let target = from_num(num, to_base);
+    Ok(target)
 }
 
 fn to_num(num: &[u32], base: u32) -> u32 {
@@ -65,29 +73,22 @@ fn from_num(num: u32, base: u32) -> Vec<u32> {
         );
     }
     for e in (0..=digits).rev() {
-        // result.push(0);
-        for i in 0..=e+1 {
-            let digit = base.pow(e) * i;
-            println!("i: {}", i);
-            println!("e: {}", e);
-            println!("digit: {}", digit);
-            println!("acc: {}", acc);
+        for _ in 0..base {
+
+            let digit = base.pow(e);
 
             match digit != 0 && acc + digit <= num {
                 true => {
-                    println!("acc + digit {}", acc + digit);
-                    println!("write to: {}", (digits - e) as usize);
-                    println!();
+
 
                     result[(digits -e ) as usize] += 1;
                     acc += digit;
                 }
-                false => {println!();}
+                false => {}
                 }
         }
     }
-    println!("res: {:?}", result);
-    result
+    result.iter().skip_while(|x| **x == 0).map(|x| *x).collect::<Vec<u32>>()
 
 }
 
