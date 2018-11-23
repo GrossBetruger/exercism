@@ -24,30 +24,28 @@ impl Clock {
 
 
     fn roll_over_hours(minutes: i32) -> i32 {
-        match minutes >= 0 {
-            true => minutes / 60,
-            false => {
-                match minutes / 60 {
-                    0 => -1,
-                    _ => (minutes / 60) -1
-                }
-            }
-        }
+       match minutes < 0 {
+           false => minutes / 60,
+           true => minutes / 60 -1
+       }
+    }
 
+    fn mathematical_modulo(n: i32, m: i32) -> i32 {
+       // equivalent to mod in haskell or % in python
+       let mut rem = n % m;
+        if ((rem < 0) && (m > 0)) || (rem > 0) && (m < 0) {
+            rem += m
+        }
+        rem
     }
 
     fn initiate_hours(hours: i32, minutes: i32) -> i32 {
-        match hours >= 0 {
-            true => (24 + hours + Clock::roll_over_hours(minutes)) % 24,
-            false => 24 + ((hours + Clock::roll_over_hours(minutes)) % 24)
-        }
+        Clock::mathematical_modulo(hours + Clock::roll_over_hours(minutes), 24)
+
     }
 
     fn roll_over_minutes(minutes: i32) -> i32 {
-        match minutes >= 0 {
-            true => minutes % 60,
-            false => 60 + (minutes % 60)
-        }
+        Clock::mathematical_modulo(minutes, 60)
     }
 
 
