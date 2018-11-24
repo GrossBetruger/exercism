@@ -71,9 +71,9 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
             1 => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
-//                if calculated_num > u32::max_value() {
-//                    return Err(Error::Overflow);
-//                }
+                if calculated_num  > u32::max_value() as u64 {
+                    return Err(Error::Overflow);
+                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
                 results.push(calculated_num as u32);
@@ -81,10 +81,9 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
             _ => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
-//                if calculated_num > u32::max_value() {
-//                   / println!("oops OVERFLOW: {}, {}", calculated_num, u32::max_value());
-//                    return Err(Error::Overflow);
-//                }
+                if calculated_num  > u32::max_value() as u64 {
+                    return Err(Error::Overflow);
+                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
                 results.push(calculated_num as u32);
@@ -126,7 +125,6 @@ fn to_bin(num: u32) -> String {
 
 fn skip_msb(byte_repr: &str) -> String {
     byte_repr.chars().skip(1).collect()
-//    byte_repr.chars().rev().take(7).rev().collect::<String>()
 }
 
 fn strip_msb(byte: u8) -> u8 {
