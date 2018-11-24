@@ -45,8 +45,9 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
     }
     let least_significant_byte = &skip_msb(&byte_to_bin(*bytes.get(bytes.len()-1).unwrap()));
     stream.push_str(least_significant_byte);
-    println!("binary: '{}', num: '{}', lsbyte: '{}'", stream,  bin_to_num32(&stream.chars().collect()), least_significant_byte);
-    Ok(vec![bin_to_num32(&stream.chars().collect())])
+    let result = bin_to_num64(&stream.chars().collect()) as u32;
+    println!("binary: '{}', num: '{}', lsbyte: '{}'", stream,  result, least_significant_byte);
+    Ok(vec![result])
 }
 
 fn byte_to_bin(num: u8) -> String {
@@ -82,6 +83,12 @@ fn bin_to_num(bin: &Vec<char>) -> u8 {
 fn bin_to_num32(bin: &Vec<char>) -> u32 {
     bin.iter().rev().enumerate().fold(0_u32, {
         |acc: u32, (e, bin_dig)| acc + bin_dig.to_digit(2).unwrap() as u32 * 2_u32.pow(e as u32)
+    })
+}
+
+fn bin_to_num64(bin: &Vec<char>) -> u64 {
+    bin.iter().rev().enumerate().fold(0_u64, {
+        |acc: u64, (e, bin_dig)| acc + bin_dig.to_digit(2).unwrap() as u64 * 2_u64.pow(e as u32)
     })
 }
 
