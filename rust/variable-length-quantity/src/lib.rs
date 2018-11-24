@@ -41,7 +41,7 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
     }
 
 //    let mut single_num_bytes = vec![];
-    let results = vec![1];
+    let mut results = vec![];
     let groups = bytes.iter()
         .group_by(|b| *b & 128 == 128)
         .into_iter().map(|(pred, group)| group.cloned().collect()).collect::<Vec<Vec<u8>>>();
@@ -53,19 +53,22 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
         let msbs: Vec<u8> = num_parts.get(0).unwrap().to_vec();
         let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
         println!("msbs: {:?} lsb: {:?}", msbs, lsb);
+        let calculated_num = parse_single_number(&msbs, lsb);
+        println!("number: {}", &calculated_num);
+        results.push(calculated_num);
     }
 
-    Ok(vec![1])
+    Ok(results)
 }
 
-fn parse_single_number(bytes: &[u8]) {
+fn parse_single_number(bytes: &[u8], lsb: u8) -> u32 {
     let mut stream = String::new();
-    for byte in bytes.iter().take_while(|b| *b & 128 == 128) {
+    for byte in bytes.iter() {
         stream.push_str(&skip_msb(&byte_to_bin(*byte)))
     }
-    let least_significant_byte = &skip_msb(&byte_to_bin(*bytes.get(bytes.len()-1).unwrap()));
+    let least_significant_byte = &skip_msb(&byte_to_bin(lsb));
     stream.push_str(least_significant_byte);
-    let result = bin_to_num64(&stream.chars().collect()) as u32;
+    bin_to_num64(&stream.chars().collect()) as u32
 }
 
 fn byte_to_bin(num: u8) -> String {
