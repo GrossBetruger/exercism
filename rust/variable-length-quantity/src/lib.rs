@@ -51,11 +51,31 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
     for num in nums_iter.into_iter() {
         let num_parts = num.collect_vec();
         let msbs: Vec<u8> = num_parts.get(0).unwrap().to_vec();
-        let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
-        println!("msbs: {:?} lsb: {:?}", msbs, lsb);
-        let calculated_num = parse_single_number(&msbs, lsb);
-        println!("number: {}", &calculated_num);
-        results.push(calculated_num);
+        let number_of_lsbs = num_parts.get(1).unwrap().len();
+//        println!("lsb size: {:?}", num_parts.get(1).unwrap().len());
+        match number_of_lsbs {
+            1 => {
+                let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
+                let calculated_num = parse_single_number(&msbs, lsb);
+//                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
+//                println!("number: {}", &calculated_num);
+                results.push(calculated_num);
+            }
+            _ => {
+                let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
+                let calculated_num = parse_single_number(&msbs, lsb);
+//                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
+//                println!("number: {}", &calculated_num);
+                results.push(calculated_num);
+
+                for lsb in num_parts.get(1).unwrap().iter().skip(1) {
+                    results.push(*lsb as u32)
+                }
+
+            }
+        }
+
+
     }
 
     Ok(results)
