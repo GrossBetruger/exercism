@@ -10,9 +10,11 @@ pub enum Error {
 
 /// Convert a list of numbers to a stream of bytes encoded with variable length encoding.
 pub fn to_bytes(values: &[u32]) -> Vec<u8> {
+    let mut sevens = vec![];
     for val in values.iter() {
-        for c in to_bin(*val).chars().chunks(3).into_iter() {
-            println!("chunk: {:?}", c.collect_vec());
+        for c in to_bin(*val).chars().chunks(7).into_iter() {
+//            println!("chunk: {:?}", c.collect_vec());
+            sevens.push(c.collect_vec());
         }
     }
 
@@ -26,4 +28,10 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
 
 fn to_bin(num: u32) -> String {
     format!("{:b}", num)
+}
+
+fn bin_to_num(bin: &str) -> u32 {
+    bin.chars().rev().enumerate().fold(0, {
+        |acc, (e, bin_dig)| acc + bin_dig.to_digit(2).unwrap() * 2_u32.pow(e as u32)
+    })
 }
