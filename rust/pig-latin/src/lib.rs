@@ -8,6 +8,16 @@ const DOUBLE_CONSONANTS: [&str; 3] = ["th", "sh", "ch"];
 
 
 pub fn translate(input: &str) -> String {
+    let mut words = vec![];
+
+    input.split(" ").for_each(|word| {
+        words.push(translate_word(word));
+    });
+
+    words.join(" ")
+}
+
+fn translate_word(input: &str) -> String {
     match first_is_vowel(&input) {
         true => return vowel_ay(&input),
         false => {
