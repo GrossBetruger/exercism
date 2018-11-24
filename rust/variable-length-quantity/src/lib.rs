@@ -26,7 +26,7 @@ pub fn to_bytes(values: &[u32]) -> Vec<u8> {
 
                 for (lsb, msbs) in sevens.split_first() {
                     println!("msbs {:?} lsb {:?}", msbs, lsb);
-                    for msb in msbs.iter() {
+                    for msb in msbs.iter().rev() {
                         let msb = msb.chars().rev().collect::<String>();
                         let msb_str: Vec<char> = pad_byte(&msb, "1").chars().collect();
                         res.push(bin_to_byte(&msb_str));
