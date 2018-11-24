@@ -112,7 +112,12 @@ fn parse_single_number(bytes: &[u8], lsb: u8) -> u64 {
 }
 
 fn byte_to_bin(num: u8) -> String {
-    pad_byte(&format!("{:b}", num),"0")
+    let raw_repr = format!("{:b}", num);
+    match raw_repr.len() == 8 {
+        true => raw_repr,
+        _ => pad_byte(&format!("{:b}", num),"0")
+    }
+
 }
 
 fn to_bin(num: u32) -> String {
@@ -129,7 +134,7 @@ fn strip_msb(byte: u8) -> u8 {
 }
 
 fn pad_byte(byte_repr: &str, first: &str) -> String {
-    let padding = String::from("0").repeat(8 - byte_repr.len() -1);
+    let padding = String::from("0").repeat(7 - byte_repr.len());
     format!("{}{}{}", first, padding, byte_repr)
 
 }
