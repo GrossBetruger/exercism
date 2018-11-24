@@ -33,8 +33,10 @@ fn translate_word(input: &str) -> String {
                             return qu_swap(input)
                         },
                         false => {
-                            println!("time for consonant swap");
-                            return consonant_swap(&input)
+                            match contains_consonant_cluster(input) {
+                                true => return handle_consonant_cluster(&input),
+                                false => return consonant_swap(&input)
+                            };
                         }
                     };
 
@@ -42,8 +44,30 @@ fn translate_word(input: &str) -> String {
             }
         }
     }
+}
 
-    input.into()
+fn contains_consonant_cluster(input: &str) -> bool {
+    let chars: Vec<char> = input.chars().collect();
+    for i in 0..chars.len()-2 {
+        let (a, b) = (chars[i], chars[i+1]);
+        match ! VOWELS.contains(&a) && ! VOWELS.contains(&b) {
+            true => {
+                match chars[i+2] == 'y' {
+                    true => return true,
+                    false => {}
+                }
+            },
+            false => {}
+
+        }
+    }
+    false
+}
+
+fn handle_consonant_cluster(input: &str) -> String {
+    format!("y{}{}ay", input.chars().skip_while(|c| *c != 'y').skip(1).collect::<String>(),
+        input.chars().take_while(|c| *c != 'y').collect::<String>()
+    )
 }
 
 fn vowel_ay(input: &str) -> String {
