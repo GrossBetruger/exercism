@@ -36,6 +36,9 @@ pub fn to_bytes(values: &[u32]) -> Vec<u8> {
 
 /// Given a stream of bytes, extract all numbers which are encoded in there.
 pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
+    if bytes.iter().all(|b| *b & 128 == 128) {
+        return Err(Error::IncompleteNumber);
+    }
     if bytes.len() == 1 {
         return Ok(vec![*bytes.get(0).unwrap() as u32]);
     }
@@ -57,6 +60,9 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
             1 => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
+                if calculated_num > u32::max_value() {
+                    return Err(Error::Overflow);
+                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
                 results.push(calculated_num);
@@ -64,6 +70,10 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
             _ => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
+                if calculated_num > u32::max_value() {
+//                    println!("oops OVERFLOW: {}, {}", calculated_num, u32::max_value());
+                    return Err(Error::Overflow);
+                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
                 results.push(calculated_num);
@@ -74,8 +84,7 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
 
             }
         }
-
-
+        
     }
 
     Ok(results)
