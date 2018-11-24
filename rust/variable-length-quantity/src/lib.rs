@@ -11,23 +11,34 @@ pub enum Error {
 /// Convert a list of numbers to a stream of bytes encoded with variable length encoding.
 pub fn to_bytes(values: &[u32]) -> Vec<u8> {
     let mut res = vec![];
-    let mut sevens = vec![];
-    for val in values.iter() {
-        for c in to_bin(*val).chars().chunks(7).into_iter() {
-//            println!("chunk: {:?}", c.collect_vec());
-            sevens.push(c.collect_vec());
-        }
-    }
 
-    let num_of_sevens = sevens.len();
-    match num_of_sevens {
-        1 => {return vec![bin_to_num(sevens.get(0).unwrap())]}
-        _ => {
-            for seven in sevens.iter().take(sevens.len() - 1) {
-                println!("seven: {:?}, num: {:?}", seven, bin_to_num(seven));
-                res.push(overflow7(bin_to_num(seven) | 128))
+    for val in values.iter() {
+        let bin_representation = to_bin(*val);
+        match bin_representation.len() < 8 {
+            true => res.push(bin_to_byte(&bin_representation.chars().collect())),
+            false => {
+                let mut sevens = vec![];
+                for seven in bin_representation.chars().rev().chunks(7).into_iter() {
+                    sevens.push(seven.collect::<String>());
+                }
+
+//                let mut bytes = vec![];
+
+                for (lsb, msbs) in sevens.split_first() {
+                    println!("msbs {:?} lsb {:?}", msbs, lsb);
+                    for msb in msbs.iter() {
+                        let msb = msb.chars().rev().collect::<String>();
+                        let msb_str: Vec<char> = pad_byte(&msb, "1").chars().collect();
+                        res.push(bin_to_byte(&msb_str));
+                        println!("msb {:?}", msb_str);
+                        println!("results: {:?}", &res);
+                    }
+                    let lsb = lsb.chars().rev().collect::<String>();
+                    res.push(bin_to_byte(&pad_byte(&lsb, "0").chars().collect()));
+                    println!("results: {:?}", &res);
+
+                }
             }
-            res.push(bin_to_num(sevens.get(num_of_sevens-1).unwrap()));
         }
     }
 
@@ -60,23 +71,23 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
             1 => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
-                if calculated_num > u32::max_value() {
-                    return Err(Error::Overflow);
-                }
+//                if calculated_num > u32::max_value() {
+//                    return Err(Error::Overflow);
+//                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
-                results.push(calculated_num);
+                results.push(calculated_num as u32);
             }
             _ => {
                 let lsb: u8 = *num_parts.get(1).unwrap().get(0).unwrap();
                 let calculated_num = parse_single_number(&msbs, lsb);
-                if calculated_num > u32::max_value() {
-//                    println!("oops OVERFLOW: {}, {}", calculated_num, u32::max_value());
-                    return Err(Error::Overflow);
-                }
+//                if calculated_num > u32::max_value() {
+//                   / println!("oops OVERFLOW: {}, {}", calculated_num, u32::max_value());
+//                    return Err(Error::Overflow);
+//                }
 //                println!("msbs: {:?} lsb: {:?}", msbs, lsb);
 //                println!("number: {}", &calculated_num);
-                results.push(calculated_num);
+                results.push(calculated_num as u32);
 
                 for lsb in num_parts.get(1).unwrap().iter().skip(1) {
                     results.push(*lsb as u32)
@@ -84,24 +95,24 @@ pub fn from_bytes(bytes: &[u8]) -> Result<Vec<u32>, Error> {
 
             }
         }
-        
+
     }
 
     Ok(results)
 }
 
-fn parse_single_number(bytes: &[u8], lsb: u8) -> u32 {
+fn parse_single_number(bytes: &[u8], lsb: u8) -> u64 {
     let mut stream = String::new();
     for byte in bytes.iter() {
         stream.push_str(&skip_msb(&byte_to_bin(*byte)))
     }
     let least_significant_byte = &skip_msb(&byte_to_bin(lsb));
     stream.push_str(least_significant_byte);
-    bin_to_num64(&stream.chars().collect()) as u32
+    bin_to_num64(&stream.chars().collect()) as u64
 }
 
 fn byte_to_bin(num: u8) -> String {
-    pad_byte(&format!("{:b}", num))
+    pad_byte(&format!("{:b}", num),"0")
 }
 
 fn to_bin(num: u32) -> String {
@@ -117,13 +128,13 @@ fn strip_msb(byte: u8) -> u8 {
     byte & 127
 }
 
-fn pad_byte(byte_repr: &str) -> String {
-    let padding = String::from("0").repeat(8 - byte_repr.len());
-    format!("{}{}", padding, byte_repr)
+fn pad_byte(byte_repr: &str, first: &str) -> String {
+    let padding = String::from("0").repeat(8 - byte_repr.len() -1);
+    format!("{}{}{}", first, padding, byte_repr)
 
 }
 
-fn bin_to_num(bin: &Vec<char>) -> u8 {
+fn bin_to_byte(bin: &Vec<char>) -> u8 {
     bin.iter().rev().enumerate().fold(0_u8, {
         |acc: u8, (e, bin_dig)| acc + bin_dig.to_digit(2).unwrap() as u8 * 2_u8.pow(e as u32)
     })
