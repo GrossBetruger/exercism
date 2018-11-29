@@ -4,8 +4,9 @@ import Data.Char
 import Data.List
 
 responseFor :: String -> String
-responseFor xs
-  | any isSpace xs = responseFor $ clearWhitespace xs
+responseFor xs = (response . clearWhitespace) xs
+
+response xs
   | null xs = "Fine. Be that way!"
   | isQuestionYell xs = "Calm down, I know what I'm doing!"
   | isQuestion xs = "Sure."
