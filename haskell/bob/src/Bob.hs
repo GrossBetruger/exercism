@@ -1,25 +1,27 @@
 module Bob (responseFor) where
 
+import qualified Data.Text as T
+import           Data.Text (Text)
 import Data.Char
 import Data.List
 
-responseFor :: String -> String
+
+responseFor :: String -> Text
 responseFor xs = (response . clearWhitespace) xs
 
+response :: String -> Text
 response xs
-  | null xs = "Fine. Be that way!"
-  | isQuestionYell xs = "Calm down, I know what I'm doing!"
-  | isQuestion xs = "Sure."
-  | isYell xs = "Whoa, chill out!"
-  | otherwise = "Whatever."
+  | null xs = T.pack "Fine. Be that way!"
+  | isQuestionYell xs = T.pack "Calm down, I know what I'm doing!"
+  | isQuestion xs = T.pack "Sure."
+  | isYell xs = T.pack "Whoa, chill out!"
+  | otherwise = T.pack "Whatever."
 
 filterNonAlpha sentence = filter (\c -> isAlpha c) sentence
 
 clearWhitespace sentence = filter (not . isSpace) sentence
 
-isYell sentence
-  | all (not . isAlpha) sentence = False
-  | otherwise = all (\c -> isUpper c) (filterNonAlpha sentence)
+isYell sentence = any isUpper sentence && not (any isLower sentence)
 
 isQuestion sentence = isSuffixOf "?" sentence
 
