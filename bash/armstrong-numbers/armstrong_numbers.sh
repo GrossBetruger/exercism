@@ -1,9 +1,7 @@
 #!/bin/bash
 
 input=$1
-log="x = l($input)/l(10); scale = 0; (x / 1) + 1"
-
-num_of_digits=$(echo $log | bc -l)
+num_of_digits=${#input}
 
 let acc=0
 while read -n1 digit; do
@@ -11,7 +9,7 @@ while read -n1 digit; do
 done < <(echo -n "$input")
 
 if [[ $acc == $input ]];
-then echo true && exit 0
+    then echo true && exit 0
 fi
 
 echo false
