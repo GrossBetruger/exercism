@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug)]
 #[derive(PartialEq)]
 pub struct Clock {
@@ -16,11 +18,6 @@ impl Clock {
     pub fn add_minutes(&mut self, minutes: i32) -> Self {
         Clock::new(self.hours + Clock::roll_over_hours(minutes, self.minutes),
                     Clock::roll_over_minutes(self.minutes + minutes))
-    }
-
-    pub fn to_string(self) -> String {
-        format!("{}:{}", Clock::stringify_time(self.hours),
-                Clock::stringify_time(self.minutes))
     }
 
     fn roll_over_hours(minutes: i32, previous_minutes: i32) -> i32 {
@@ -59,4 +56,11 @@ impl Clock {
         }
     }
 
+}
+
+impl fmt::Display for Clock {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}:{}", Clock::stringify_time(self.hours),
+                Clock::stringify_time(self.minutes))
+    }
 }
